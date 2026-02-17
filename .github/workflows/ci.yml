@@ -11,26 +11,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Hämta koden
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Installera Node.js (för ditt projekt)
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      # 3️⃣ Installera npm dependencies
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Bygg Docker image från repo-root
       - name: Build Docker image
         run: docker build -t my-app .
 
-      # 5️⃣ Skanna Docker image med Trivy (v2!)
       - name: Scan Docker image with Trivy
-        uses: aquasecurity/trivy-action@v2
+        uses: aquasecurity/trivy-action@0.33.1
         with:
           image-ref: my-app
+          format: table
+          exit-code: 1
+          ignore-unfixed: true
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
