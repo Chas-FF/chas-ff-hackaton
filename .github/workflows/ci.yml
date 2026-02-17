@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD Docker + Trivy
 
 on:
   push:
@@ -11,16 +11,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      # 1️⃣ Hämta koden
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      # 2️⃣ Installera Node.js (för ditt projekt)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-    - name: Build Docker image
-      run: docker build -t my-app .
+      # 3️⃣ Installera npm dependencies
+      - name: Install dependencies
+        run: npm install
 
-    - name: Scan Docker image with Trivy
-      uses: aquasecurity/trivy-action@v1
-      with:
-        image-ref: my-app
+      # 4️⃣ Bygg Docker image från repo-root
+      - name: Build Docker image
+        run: docker build -t my-app .
+
+      # 5️⃣ Skanna Docker image med Trivy (v2!)
+      - name: Scan Docker image with Trivy
+        uses: aquasecurity/trivy-action@v2
+        with:
+          image-ref: my-app
